@@ -9,7 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+import java.util.Iterator;
+import java.util.ListIterator;
 /**
  * Implementation of a Map using a List of entries, so most
  * operations are linear time.
@@ -64,6 +65,18 @@ public class MyLinearMap<K, V> implements Map<K, V> {
 	 */
 	private Entry findEntry(Object target) {
         // TODO: fill this in
+        Iterator it = entries.iterator();
+		while(it.hasNext()){
+			Entry entry = (Entry)it.next();
+			K k = (K) entry.getKey();
+			if(k==null){
+				if(target==null)
+					return entry;
+			}
+			else if(k.equals((K)target)){
+				return entry;
+			}
+		}
 		return null;
 	}
 
@@ -99,6 +112,18 @@ public class MyLinearMap<K, V> implements Map<K, V> {
 	@Override
 	public V get(Object key) {
         // TODO: fill this in.
+        ListIterator it = entries.listIterator();
+        while(it.hasNext()){
+        	Entry entry = (Entry)it.next();
+        	if(entry.getKey()==null){
+        		if(key==null)
+        			return entry.getValue();
+        	}
+        	else if(entry.getKey().equals((K)key))
+        	{
+        		return entry.getValue();
+        	}
+        }
 		return null;
 	}
 
@@ -119,7 +144,29 @@ public class MyLinearMap<K, V> implements Map<K, V> {
 	@Override
 	public V put(K key, V value) {
         // TODO: fill this in.
-        return null;
+        //if()
+        {
+        	//System.out.println(value+" "+key);
+        }
+        Iterator it = entries.iterator();
+		while(it.hasNext()){
+			Entry entry = (Entry)it.next();
+			K k = entry.getKey();
+			if(k==null){
+				if(key==null)
+				{
+					entry.setValue(value);
+					return entry.getValue();
+				}
+			}
+			else if(k.equals(key)){
+				entry.setValue(value);
+				return entry.getValue();
+			}
+		}
+		Entry entry = new Entry(key,value);
+		entries.add(entry);
+		return entry.getValue();
 	}
 
 	@Override
@@ -132,6 +179,22 @@ public class MyLinearMap<K, V> implements Map<K, V> {
 	@Override
 	public V remove(Object key) {
         // TODO: fill this in.
+        ListIterator it = entries.listIterator();
+        while(it.hasNext()){
+        	Entry entry = (Entry) it.next();
+        	if(entry.getKey()==null){
+        		if(key==null){
+        			V v = entry.getValue();
+        			it.remove();
+        			return v;
+        		}
+        	}
+        	else if(entry.getKey().equals((K)key)){
+        		V v = entry.getValue();
+        		it.remove();
+        		return v;        		
+        	}
+        }
         return null;
 	}
 
@@ -156,9 +219,11 @@ public class MyLinearMap<K, V> implements Map<K, V> {
 		Map<String, Integer> map = new MyLinearMap<String, Integer>();
 		map.put("Word1", 1);
 		map.put("Word2", 2);
+		map.put(null, 5);
+		map.remove(null);
 		Integer value = map.get("Word1");
 		System.out.println(value);
-		
+		System.out.println(map.get(null));
 		for (String key: map.keySet()) {
 			System.out.println(key + ", " + map.get(key));
 		}
